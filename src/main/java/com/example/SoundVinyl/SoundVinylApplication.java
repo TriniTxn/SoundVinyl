@@ -1,4 +1,4 @@
-package com.example.SoundVinyl.app;
+package com.example.SoundVinyl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -35,3 +35,6 @@ build/
 
 
 **/application.properties
+**/application-test.properties
+**/application-dev.properties
+.env

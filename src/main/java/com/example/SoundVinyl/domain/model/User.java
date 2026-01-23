@@ -31,6 +31,10 @@ public class User {
     private String password; //MVP can stay null for a while
 
     @Column(nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
+
+    public void prePersist() {
+        this.createdAt = Instant.now();
+    }
 
 }
