@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"list_id", "album_id"}))
 public class AlbumList {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

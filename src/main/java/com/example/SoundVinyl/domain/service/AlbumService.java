@@ -19,4 +19,5 @@ public class AlbumService {
     public Album getOrThrow(Long id) {
         return albumRepo.findById(id).orElseThrow();
     }
+
 }

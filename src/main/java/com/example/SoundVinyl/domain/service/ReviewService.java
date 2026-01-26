@@ -6,37 +6,41 @@ import com.example.SoundVinyl.domain.model.User;
 import com.example.SoundVinyl.domain.repository.AlbumRepository;
 import com.example.SoundVinyl.domain.repository.ReviewRepository;
 import com.example.SoundVinyl.domain.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
-    private final ReviewRepository reviewRepo;
-    private final AlbumRepository albumRepo;
-    private final UserRepository userRepo;
+
+    @Autowired
+    private ReviewRepository reviewRepo;
+
+    @Autowired
+    private AlbumRepository albumRepo;
+
+    @Autowired
+    private UserRepository userRepo;
 
     public Review upsertReview(Long userId, Long albumId, Double rating, String text) {
-        User user = userRepo.findById(userId).orElseThrow();
-        Album album = albumRepo.findById(albumId).orElseThrow();
 
-        var existing = reviewRepo.findByUserIdAndAlbumId(userId, albumId);
-        Review r = existing.orElseGet(Review::new);
-        boolean isNew = r.getId() == null;
+        User user = userRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        r.setUser(user); r.setAlbum(album);
-        r.setRating(rating); r.setText(text);
-        r.setUpdatedAt(Instant.now());
-        r = reviewRepo.save(r);
+        Album album = albumRepo.findById(albumId).orElseThrow(() -> new IllegalArgumentException("Album not found"));
 
-        var reviews = reviewRepo.findByAlbumIdOrderByCreatedAtDesc(albumId);
-        double avg = reviews.stream().map(Review::getRating).filter(v -> v != null).mapToDouble(Double::doubleValue).average().orElse(0.0);
-        album.setRatingAvg(Math.round(avg * 10.0) / 10.0);
-        album.setRatingCount(reviews.size());
-        albumRepo.save(album);
+        Review review = reviewRepo
+                .findByUserIdAndAlbumId(userId, albumId)
+                .orElseGet(() -> Review.builder().user(user).album(album).createdAt(Instant.now()).build());
 
-        return r;
+        review.setRating(rating);
+        review.setText(text);
+        review.setUpdatedAt(Instant.now());
+
+        return reviewRepo.save(review);
     }
 }

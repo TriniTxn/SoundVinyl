@@ -16,7 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 30)
     private String username;
@@ -33,6 +33,7 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    @PrePersist
     public void prePersist() {
         this.createdAt = Instant.now();
     }

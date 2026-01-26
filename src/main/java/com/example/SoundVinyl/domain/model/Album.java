@@ -1,5 +1,6 @@
 package com.example.SoundVinyl.domain.model;
 
+import com.example.SoundVinyl.domain.enums.AlbumType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,17 +23,11 @@ public class Album {
 
     private String coverUrl;
 
-    @Column(length=10) // ALBUM | EP | SINGLE
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private AlbumType type;
 
     @ManyToOne(optional=false, fetch = FetchType.LAZY)
     private Artist artist;
-
-    @Column(nullable=false)
-    private Double ratingAvg = 0.0;
-
-    @Column(nullable=false)
-    private Integer ratingCount = 0;
 
     @Column(unique=true)
     private String mbid;

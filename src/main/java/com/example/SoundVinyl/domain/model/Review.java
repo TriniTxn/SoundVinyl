@@ -13,6 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "album_id"}))
 public class Review {
 
     @Id
@@ -35,4 +36,6 @@ public class Review {
     private Instant createdAt = Instant.now();
 
     private Instant updatedAt;
+
+    
 }
