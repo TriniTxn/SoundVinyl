@@ -29,6 +29,13 @@ public class Album {
     @ManyToOne(optional=false, fetch = FetchType.LAZY)
     private Artist artist;
 
+    @Column(name = "rating_avg")
+    private Double ratingAvg;
+
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+
+
     @Column(unique=true)
     private String mbid;
 }
