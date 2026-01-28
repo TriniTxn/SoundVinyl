@@ -5,9 +5,28 @@
     <title th:text="${album.title}">Álbum</title>
 
     <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            th:href="@{/css/base.css}"
             rel="stylesheet"
     />
+    <link
+            th:href="@{/css/components.css}"
+            rel="stylesheet"
+    />
+    <link
+        th:href="@{/css/pages/album.css}"
+        rel="stylesheet"
+    />
+    <style>
+        .star {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #ccc;
+        }
+        .star.active {
+            color: #f5c518;
+        }
+    </style>
+
 </head>
 
 <body class="container py-4">
@@ -19,12 +38,14 @@
 <div class="row">
     <!-- Cover -->
     <div class="col-md-4 text-center">
-        <img
-                th:src="${album.coverUrl}"
-                class="img-fluid rounded shadow-sm mb-3"
-                alt="Capa do álbum"
-                style="max-width: 300px;"
-        />
+        <div class="cover-wrapper mb-3 cover-sm" style="max-width: 300px;">
+            <img
+                    th:src="${album.coverUrl}"
+                    class="img-fluid rounded shadow-sm mb-3"
+                    alt="Capa do álbum"
+                    style="max-width: 300px;"
+            />
+        </div>
     </div>
 
     <!-- Info -->
@@ -59,15 +80,11 @@
 
             <div class="mb-2">
                 <label class="form-label">Nota (0 a 5)</label>
-                <input
-                        class="form-control"
-                        type="number"
-                        id="rating"
-                        min="0"
-                        max="5"
-                        step="0.5"
-                        th:value="${myReview != null ? myReview.rating : 4.0}"
-                />
+                <div class="mb-2">
+                    <label class="form-label">Nota</label>
+                    <div id="stars"></div>
+                    <input type="hidden" id="rating" value="4">
+                </div>
             </div>
 
             <div class="mb-2">
@@ -99,6 +116,7 @@
 <script>
     async function loadReviews() {
         const albumId = document.getElementById('albumId').value;
+
         const res = await fetch(`/api/reviews?albumId=${albumId}`);
         const data = await res.json();
 
@@ -107,8 +125,20 @@
 
         data.forEach(r => {
             const li = document.createElement('li');
-            li.className = 'list-group-item';
-            li.innerHTML = `<strong>★ ${r.rating}</strong> — ${r.text ?? ''}`;
+            li.className = 'list-group-item d-flex gap-3';
+
+            if (r.mine) li.classList.add('border-success');
+
+            li.innerHTML = `
+            <img src="${r.avatarUrl}" class="rounded-circle" width="40" height="40"/>
+            <div>
+                <strong>${r.username}</strong>
+                ${r.mine ? '<span class="badge bg-success ms-2">You</span>' : ''}
+                <div class="text-warning">${renderStars(r.rating)}</div>
+                <div>${r.text ?? ''}</div>
+            </div>
+        `;
+
             ul.appendChild(li);
         });
     }
@@ -136,6 +166,27 @@
         });
 
     loadReviews();
+
+    const starsDiv = document.getElementById('stars');
+    const ratingInput = document.getElementById('rating')
+
+    function renderStars(value = 0) {
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            html += `<span class="star ${i <= value ? 'active' : ''}" data-value="${i}">★</span>`;
+        }
+        return html;
+    }
+
+    starsDiv.innerHTML = renderStars(4);
+
+    starsDiv.addEventListener('click', e => {
+        if (!e.target.classList.contains('star')) return;
+
+        const value = Number(e.target.dataset.value);
+        ratingInput.value = value;
+        starsDiv.innerHTML = renderStars(value);
+    });
 </script>
 
 </body>

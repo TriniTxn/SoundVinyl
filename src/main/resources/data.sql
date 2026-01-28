@@ -35,7 +35,7 @@ VALUES (
            1,
            'Discovery',
            2001,
-           'https://i.imgur.com/8Km9tLL.jpg',
+           'https://i.imgur.com/Qx8lcYE.jpeg',
            'SYNTHWAVE',
            1,
            4.5,

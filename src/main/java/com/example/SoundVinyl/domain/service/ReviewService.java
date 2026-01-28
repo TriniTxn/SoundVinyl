@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class ReviewService {
 
@@ -41,6 +40,20 @@ public class ReviewService {
         review.setText(text);
         review.setUpdatedAt(Instant.now());
 
-        return reviewRepo.save(review);
+        Review saved = reviewRepo.save(review);
+
+        updateAlbumStats(album);
+
+        return saved;
+    }
+
+    private void updateAlbumStats(Album album) {
+        Double avg = reviewRepo.findAverageRatingByAlbumId(album.getId());
+        long count = reviewRepo.countByAlbumId(album.getId());
+
+        album.setRatingAvg(avg == null ? 0.0 : Math.round(avg * 10.0) / 10.0);
+        album.setRatingCount((int) count);
+
+        albumRepo.save(album);
     }
 }

@@ -1,0 +1,9 @@
+/* Album cover emphasis */
+.album-cover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Review header spacing */
+.review-header {
+    margin-bottom: 10px;
+}

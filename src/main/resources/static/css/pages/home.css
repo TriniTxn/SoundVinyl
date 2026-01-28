@@ -1,0 +1,9 @@
+/* Album grid cards */
+.card-title {
+    font-size: 1.05rem;
+}
+
+.card-text {
+    color: var(--muted);
+    font-size: .9rem;
+}

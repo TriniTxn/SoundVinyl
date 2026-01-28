@@ -1,6 +1,7 @@
 package com.example.SoundVinyl.domain.repository;
 
 import com.example.SoundVinyl.domain.model.Album;
+import com.example.SoundVinyl.domain.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,9 +23,20 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     )
     List<Album> searchWithArtist(@Param("q") String q);
 
-    @Query("SELECT a FROM Album a JOIN FETCH a.artist")
+    @Query("SELECT a FROM Album a JOIN FETCH a.artist ORDER BY a.ratingAvg DESC")
     List<Album> findAllWithArtist();
 
     @Query("SELECT a FROM Album a JOIN FETCH a.artist WHERE a.id = :id ")
     Optional<Album> findByIdWithArtist(@Param("id") Long id);
+
+    @Query("SELECT r FROM Review r JOIN FETCH r.user WHERE r.album.id = :albumId ORDER BY r.createdAt DESC")
+    List<Review> findByAlbumIdOrderByCreatedAtDesc(@Param("albumId") Long albumId);
+
+
+    /* Stats (future)
+        long countByAlbumId(Long albumId);
+     */
+
+    @Query("SELECT avg(r.rating) FROM Review r WHERE r.album.id = :albumId AND r.rating IS NOT null")
+    Double averageRatingByAlbumId(@Param("albumId") Long albumId);
 }
