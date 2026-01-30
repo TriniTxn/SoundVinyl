@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header class="app-header" th:fragment="header">
+    <div class="header-container">
+        <a href="/static" class="logo">
+            <span>Sound</span>Vinyl
+        </a>
+
+        <nav class="nav-links">
+            <a href="/static">Home</a>
+            <a href="/album/">Albums</a>
+            <a href="#">Reviews</a>
+        </nav>
+
+        <div class="user-area">
+            <img src="/img/avatar-default.png" alt="User Avatar" class="avatar">
+            <span class="username">guest</span>
+        </div>
+    </div>
+</header>
+
+</body>
+</html>

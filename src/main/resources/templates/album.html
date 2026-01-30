@@ -10,6 +10,9 @@
 </head>
 
 <body>
+
+<div th:replace="header.html :: header"></div>
+
 <main class="container page stack-lg">
 
     <a th:href="@{/}" class="btn btn-ghost">&larr; Voltar</a>
@@ -166,6 +169,8 @@
 
     loadReviews();
 </script>
+
+<div th:replace="footer.html :: footer"></div>
 
 </body>
 </html>

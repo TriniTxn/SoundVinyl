@@ -10,9 +10,10 @@
 </head>
 
 <body>
-<main class="container page stack-lg">
-    <h1>SoundVinyl</h1>
 
+<div th:replace="header.html :: header"></div>
+
+<main class="container page stack-lg">
     <form method="get" th:action="@{/}">
         <input
                 class="form-control"
@@ -52,5 +53,8 @@
         Album not found.
     </p>
 </main>
+
+<div th:replace="footer.html :: footer"></div>
+
 </body>
 </html>
