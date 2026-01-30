@@ -1,5 +1,6 @@
 package com.example.SoundVinyl.domain.service;
 
+import com.example.SoundVinyl.app.dto.ReviewResponseDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.model.Review;
 import com.example.SoundVinyl.domain.model.User;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @Transactional
@@ -29,7 +31,6 @@ public class ReviewService {
     public Review upsertReview(Long userId, Long albumId, Double rating, String text) {
 
         User user = userRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
         Album album = albumRepo.findById(albumId).orElseThrow(() -> new IllegalArgumentException("Album not found"));
 
         Review review = reviewRepo
@@ -56,4 +57,18 @@ public class ReviewService {
 
         albumRepo.save(album);
     }
+
+    /* public List<ReviewResponseDTO> listByAlbum(Long albumId, Long currentUserId) {
+        return reviewRepo.findByAlbumIdOrderByUpdatedAtDesc(albumId)
+                .stream()
+                .map(r -> ReviewResponseDTO
+                        .id(r.getId())
+                        .username(r.getUser().getUsername())
+                        .avatarUrl("/img/avatar-default.png")
+                        .rating(r.getRating())
+                        .text(r.getText())
+                        .mine(r.getUser().getId().equals(currentUserId))
+                        .build())
+                .toList();
+    } */
 }

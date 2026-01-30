@@ -4,114 +4,104 @@
     <meta charset="UTF-8"/>
     <title th:text="${album.title}">Álbum</title>
 
-    <link
-            th:href="@{/css/base.css}"
-            rel="stylesheet"
-    />
-    <link
-            th:href="@{/css/components.css}"
-            rel="stylesheet"
-    />
-    <link
-        th:href="@{/css/pages/album.css}"
-        rel="stylesheet"
-    />
-    <style>
-        .star {
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #ccc;
-        }
-        .star.active {
-            color: #f5c518;
-        }
-    </style>
-
+    <link th:href="@{/css/base.css}" rel="stylesheet"/>
+    <link th:href="@{/css/components.css}" rel="stylesheet"/>
+    <link th:href="@{/css/pages/album.css}" rel="stylesheet"/>
 </head>
 
-<body class="container py-4">
+<body>
+<main class="container page stack-lg">
 
-<a th:href="@{/}" class="btn btn-link mb-4">
-    &larr; Voltar
-</a>
+    <a th:href="@{/}" class="btn btn-ghost">&larr; Voltar</a>
 
-<div class="row">
-    <!-- Cover -->
-    <div class="col-md-4 text-center">
-        <div class="cover-wrapper mb-3 cover-sm" style="max-width: 300px;">
-            <img
-                    th:src="${album.coverUrl}"
-                    class="img-fluid rounded shadow-sm mb-3"
-                    alt="Capa do álbum"
-                    style="max-width: 300px;"
-            />
-        </div>
-    </div>
-
-    <!-- Info -->
-    <div class="col-md-8">
-        <h2 th:text="${album.title}">Título</h2>
-
-        <p class="text-muted">
-            <strong th:text="${album.artist.name}">Artista</strong>
-            • <span th:text="${album.releaseYear}">Ano</span>
-        </p>
-
-        <!-- Rating block
-        <div class="mb-3">
-            <span class="fs-3 fw-bold">
-                ★ <span th:text="${album.}">0.0</span>
-            </span>
-            <span class="text-muted">
-                (<span th:text="${stats.ratingCount}">0</span> avaliações)
-            </span>
-        </div>
-        -->
-
-        <hr/>
-
-        <!-- Review form -->
-        <h5 th:text="${myReview != null ? 'Editar review' : 'Escrever review'}">
-            Escrever review
-        </h5>
-
-        <form id="reviewForm" class="mb-4">
-            <input type="hidden" id="albumId" th:value="${album.id}"/>
-
-            <div class="mb-2">
-                <label class="form-label">Nota (0 a 5)</label>
-                <div class="mb-2">
-                    <label class="form-label">Nota</label>
-                    <div id="stars"></div>
-                    <input type="hidden" id="rating" value="4">
-                </div>
+    <section class="album-hero">
+        <!-- Cover -->
+        <div>
+            <div class="cover-wrapper">
+                <img th:src="${album.coverUrl}" alt="Capa do álbum"/>
             </div>
+        </div>
 
-            <div class="mb-2">
-                <label class="form-label">Texto</label>
-                <textarea
-                        class="form-control"
-                        id="text"
-                        rows="4"
-                        placeholder="O que você achou?"
-                        th:text="${myReview != null ? myReview.text : ''}"
-                ></textarea>
-            </div>
+        <!-- Info -->
+        <div class="stack">
+            <header class="album-header">
+                <h2 th:text="${album.title}">Título</h2>
 
-            <button class="btn btn-success" type="submit">
-                Salvar review
-            </button>
+                <p class="text-muted">
+                    <strong th:text="${album.artist.name}">Artista</strong>
+                    • <span th:text="${album.releaseYear}">Ano</span>
+                </p>
+            </header>
 
-            <div class="mt-2 text-muted" id="status"></div>
-        </form>
+            <hr/>
 
-        <hr/>
+            <!-- Review form -->
+            <section class="stack" aria-labelledby="reviewTitle">
+                <h5 id="reviewTitle" th:text="${myReview != null ? 'Editar review' : 'Escrever review'}">
+                    Escrever review
+                </h5>
 
-        <!-- Reviews -->
-        <h5>Reviews recentes</h5>
-        <ul id="reviews" class="list-group"></ul>
-    </div>
-</div>
+                <form id="reviewForm" class="stack">
+                    <input type="hidden" id="albumId" th:value="${album.id}"/>
+
+                    <fieldset class="form-field">
+                        <legend class="form-label">Nota (0 a 5)</legend>
+
+                        <!-- Rating CSS-only -->
+                        <div id="stars" class="rating rating-group" role="radiogroup" aria-label="Sua nota">
+                            <!-- Ordem descendente + row-reverse no CSS -->
+                            <input type="radio" id="rating-5" name="rating" value="5"
+                                   th:checked="${myReview != null and myReview.rating == 5}"/>
+                            <label class="star" for="rating-5" aria-label="5 estrelas">★</label>
+
+                            <input type="radio" id="rating-4" name="rating" value="4"
+                                   th:checked="${myReview == null ? true : (myReview.rating == 4)}"/>
+                            <label class="star" for="rating-4" aria-label="4 estrelas">★</label>
+
+                            <input type="radio" id="rating-3" name="rating" value="3"
+                                   th:checked="${myReview != null and myReview.rating == 3}"/>
+                            <label class="star" for="rating-3" aria-label="3 estrelas">★</label>
+
+                            <input type="radio" id="rating-2" name="rating" value="2"
+                                   th:checked="${myReview != null and myReview.rating == 2}"/>
+                            <label class="star" for="rating-2" aria-label="2 estrelas">★</label>
+
+                            <input type="radio" id="rating-1" name="rating" value="1"
+                                   th:checked="${myReview != null and myReview.rating == 1}"/>
+                            <label class="star" for="rating-1" aria-label="1 estrela">★</label>
+                        </div>
+                    </fieldset>
+
+                    <div>
+                        <label class="form-label" for="text">Texto</label>
+                        <textarea
+                                class="form-control"
+                                id="text"
+                                rows="4"
+                                placeholder="O que você achou?"
+                                th:text="${myReview != null ? myReview.text : ''}"
+                        ></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">
+                        Salvar review
+                    </button>
+
+                    <div class="text-muted" id="status"></div>
+                </form>
+
+            </section>
+
+            <hr/>
+
+            <!-- Reviews -->
+            <section class="stack">
+                <h5>Reviews recentes</h5>
+                <ul id="reviews" class="list-group"></ul>
+            </section>
+        </div>
+    </section>
+</main>
 
 <script>
     async function loadReviews() {
@@ -125,19 +115,17 @@
 
         data.forEach(r => {
             const li = document.createElement('li');
-            li.className = 'list-group-item d-flex gap-3';
-
-            if (r.mine) li.classList.add('border-success');
-
+            li.className = 'list-group-item d-flex gap-3 review';
+            if (r.mine) li.classList.add('mine'); // Native css highlight
             li.innerHTML = `
-            <img src="${r.avatarUrl}" class="rounded-circle" width="40" height="40"/>
-            <div>
-                <strong>${r.username}</strong>
-                ${r.mine ? '<span class="badge bg-success ms-2">You</span>' : ''}
-                <div class="text-warning">${renderStars(r.rating)}</div>
-                <div>${r.text ?? ''}</div>
-            </div>
-        `;
+                <img src="${r.avatarUrl}" class="rounded-circle" width="40" height="40" alt="Avatar"/>
+                <div>
+                    <strong>${r.username}</strong>
+                    ${r.mine ? '<span class="badge badge-accent" style="margin-inline-start: var(--space-3);">Você</span>' : ''}
+                    <div>${renderStars(r.rating)}</div>
+                    <div>${r.text ?? ''}</div>
+                </div>
+            `;
 
             ul.appendChild(li);
         });
@@ -147,9 +135,12 @@
         .addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const ratingEl = document.querySelector('input[name="rating"]:checked');
+            const rating = ratingEl ? Number(ratingEl.value) : 0;
+
             const body = {
                 albumId: Number(document.getElementById('albumId').value),
-                rating: Number(document.getElementById('rating').value),
+                rating,
                 text: document.getElementById('text').value
             };
 
@@ -165,28 +156,15 @@
             await loadReviews();
         });
 
-    loadReviews();
-
-    const starsDiv = document.getElementById('stars');
-    const ratingInput = document.getElementById('rating')
-
     function renderStars(value = 0) {
         let html = '';
         for (let i = 1; i <= 5; i++) {
-            html += `<span class="star ${i <= value ? 'active' : ''}" data-value="${i}">★</span>`;
+            html += `<span class="star ${i <= value ? 'active' : ''}" aria-hidden="true">★</span>`;
         }
         return html;
     }
 
-    starsDiv.innerHTML = renderStars(4);
-
-    starsDiv.addEventListener('click', e => {
-        if (!e.target.classList.contains('star')) return;
-
-        const value = Number(e.target.dataset.value);
-        ratingInput.value = value;
-        starsDiv.innerHTML = renderStars(value);
-    });
+    loadReviews();
 </script>
 
 </body>

@@ -23,7 +23,7 @@ public class ProfileController {
     public String profile(@PathVariable String username, Model model) {
         var user = userRepo.findByUsername(username).orElseThrow();
         model.addAttribute("user", user);
-        model.addAttribute("reviews", reviewRepo.findByAlbumIdOrderByCreatedAtDesc(Long.valueOf(user.getId())));
+        model.addAttribute("reviews", reviewRepo.findByAlbumIdOrderByUpdatedAtDesc(Long.valueOf(user.getId())));
         model.addAttribute("lists", albumListRepo.findByOwnerIdOrderByCreatedAtDesc(Long.valueOf(user.getId())));
 
         return "profile";

@@ -1,19 +1,93 @@
 /* BUTTONS */
-.btn-primary {
-    background-color: var(--accent);
-    border: none;
-    color: #000;
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
     font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease, background-color
+    var(--transition-fast) ease, border-color var(--transition-fast) ease, opacity var(--transition-fast) ease;
+    user-select: none;
+    text-decoration: none; /* for <a> as button */
 }
 
-.btn-primary:hover {
-    background-color: #00c94a;
+.btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-soft), 0 0 0 1px var(--accent);
 }
+
+.btn:active { transform: translateY(1px); }
+
+.btn[disabled], .btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* Primary */
+.btn-primary {
+    background-color: var(--accent);
+    color: #000;
+    border-color: transparent;
+}
+
+.btn-primary:hover { background-color: #00c94a; }
+
+.btn-primary:active { background-color: #00b843; }
+
+/* Secondary (muted) */
+.btn-secondary {
+    background-color: var(--bg-soft);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.btn-secondary:hover {
+    background-color: #191b22;
+    border-color: #343946;
+}
+
+/* Ghost (link style but buttony) */
+.btn-ghost {
+    background-color: transparent;
+    color: var(--accent);
+    border-color: transparent;
+}
+
+.btn-ghost:hover {
+    background-color: var(--accent-soft);
+}
+
+/* Danger */
+.btn-danger {
+    background-color: var(--danger);
+    color: #000;
+    border-color: transparent;
+}
+
+.btn-danger:hover { filter: brightness(0.95); }
+
+/* Link-styled button (kept for compatibility) */
 
 .btn-link {
     color: var(--accent);
     font-weight: 600;
+    background: transparent;
+    border: none;
+    padding: 0;
 }
+
+/* Sizes */
+.btn-sm { padding: 8px 10px; font-size: .9rem; }
+
+.btn-lg { padding: 12px 18px; font-size: 1.05rem; }
+
+.btn-block { width: 100%; }
 
 /* CARDS */
 .card {
@@ -21,6 +95,13 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
+    overflow: hidden; /* ensures rounded corners also clip children */
+    transition: box-shadow var(--transition) ease, transform var(--transition) ease, border-color var(--transition) ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .card img {
@@ -28,56 +109,105 @@
     border-bottom-right-radius: 0;
 }
 
-/*BADGES */
+.card-header, .card-body, .card-footer {
+    padding: var(--space-5);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border);
+}
+
+.card-footer {
+    border-top: 1px solid var(--border);
+}
+
+/* BADGES */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: .7rem;
+    line-height: 1;
+    border: 1px solid transparent;
+}
+
 .badge-accent {
     background-color: var(--accent-soft);
     color: var(--accent);
-    border-radius: 999px;
-    font-size: .65rem;
+    border-color: rgba(0, 224, 84, 0.25);
+}
+
+.badge-muted {
+    background-color: var(--bg-soft);
+    color: var(--muted);
+    border-color: var(--border);
+}
+
+.badge-danger {
+    background-color: rgba(255,92,92,.15);
+    color: var(--danger);
+    border-color: rgba(255,92,92,.25);
 }
 
 /* STAR RATING */
+.rating {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+}
+
 .star {
     font-size: 1.8rem;
     cursor: pointer;
-    color: #444;
-    transition: color .15s ease;
+    color: #54575e; /* slightly lighter than your #444 for dark bg */
+    transition: color var(--transition-fast) ease, transform var(--transition-fast) ease;
+
 }
 
-.star.active {
+.star:hover { transform: scale(1.05); }
+
+.star.active { color: var(--star); }
+
+.star:focus-visible {
+    outline: none;
     color: var(--star);
+    text-shadow: 0 0 8px rgba(245,197,24,.35);
 }
 
 /* LIST GROUP (REVIEWS) */
+.list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* replaces adjacent sibling margins */
+}
+
 .list-group-item {
     background-color: var(--card);
     border: 1px solid var(--border);
     color: var(--text);
     border-radius: var(--radius-md);
+    padding: var(--space-4);
+    transition: border-color var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
 }
 
-.list-group-item + .list-group-item {
-    margin-top: 12px;
+.list-group-item:hover {
+    border-color: #363b46;
 }
 
-/* Highlight my review */
 .list-group-item.mine {
     border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent-soft);
+    box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
-/*FORMS */
-textarea,
-input {
-    background-color: var(--bg-soft) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text) !important;
-}
+/* FORMS – component-level enhancements (kept compatible) */
+.form-field { display: grid; gap: 6px; }
 
-textarea::placeholder {
-    color: var(--muted);
-}
+.form-actions { display: flex; gap: 10px; align-items: center; }
+
 /* ALBUM COVER (SQUARE) */
+
 .cover-wrapper {
     position: relative;
     width: 100%;
@@ -96,7 +226,53 @@ textarea::placeholder {
     object-position: center;
 }
 
-.cover-sm {
-    max-width: 64px;
+.cover-sm { max-width: 64px; }
+
+/* Generic aspect utility if needed elsewhere */
+
+.aspect-square {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
 }
 
+.aspect-square > * {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+}
+/* Stars container ~ */
+.rating-group {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 6px;
+}
+
+/* hides visually the inputs */
+.rating-group input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+/* clickable stars (reutilizes .star) */
+.rating-group label.star {
+    font-size: 2rem;             /* default size; adjust by context */
+    color: #54575e;
+    cursor: pointer;
+    transition: color var(--transition-fast) ease, transform var(--transition-fast) ease;
+}
+
+/* Hover and selection star painting */
+.rating-group label.star:hover,
+.rating-group label.star:hover ~ label.star,
+.rating-group input[type="radio"]:checked ~ label.star {
+    color: var(--star);
+}
+
+/* Accessibility */
+.rating-group:focus-within label.star {
+    text-shadow: 0 0 8px rgba(245,197,24,.25);
+}

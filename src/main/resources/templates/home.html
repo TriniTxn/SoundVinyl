@@ -4,74 +4,53 @@
     <meta charset="UTF-8"/>
     <title>SoundVinyl — Home</title>
 
-    <link
-            th:href="@{/css/base.css}"
-            rel="stylesheet"
-    />
-    <link
-            th:href="@{/css/components.css}"
-            rel="stylesheet"
-    />
-    <link
-            th:href="@{/css/pages/home.css}"
-            rel="stylesheet"
-    />
-
+    <link th:href="@{/css/base.css}" rel="stylesheet"/>
+    <link th:href="@{/css/components.css}" rel="stylesheet"/>
+    <link th:href="@{/css/pages/home.css}" rel="stylesheet"/>
 </head>
 
-<body class="container py-4">
+<body>
+<main class="container page stack-lg">
+    <h1>SoundVinyl</h1>
 
-<h1 class="mb-4">SoundVinyl</h1>
+    <form method="get" th:action="@{/}">
+        <input
+                class="form-control"
+                name="q"
+                th:value="${q}"
+                placeholder="Buscar por álbum ou artista"
+        />
+    </form>
 
-<form method="get" th:action="@{/}" class="mb-4">
-    <input
-            class="form-control"
-            name="q"
-            th:value="${q}"
-            placeholder="Buscar por álbum ou artista"
-    />
-</form>
-
-<div class="row g-3" th:if="${albums.size() > 0}">
-    <div
-            class="col-6 col-md-4 col-lg-3"
-            th:each="a : ${albums}"
-    >
-        <div class="card h-100 shadow-sm">
-
+    <div th:if="${albums.size() > 0}" class="album-grid">
+        <article class="card" th:each="a : ${albums}">
             <a th:href="@{|/album/${a.id}|}">
-                <div class="cover-wrapper cover-sm">
-                    <img
-                            th:src="${a.coverUrl}"
-                            alt="Capa do álbum"
-                    />
+                <div class="cover-wrapper">
+                    <img th:src="${a.coverUrl}" alt="Capa do álbum"/>
                 </div>
             </a>
 
-            <div class="card-body p-2">
-                <h6 class="card-title mb-1" th:text="${a.title}">
-                    Álbum
-                </h6>
+            <div class="card-body">
+                <h6 class="card-title" th:text="${a.title}">Álbum</h6>
 
-                <div class="small text-muted">
+                <div class="text-muted">
                     <span th:text="${a.artist.name}">Artista</span>
                     • <span th:text="${a.releaseYear}">Ano</span>
                 </div>
 
-                <div class="small mt-1">
+                <div>
                     ★ <strong th:text="${a.ratingAvg}">0.0</strong>
                     <span class="text-muted">
                         (<span th:text="${a.ratingCount}">0</span>)
                     </span>
                 </div>
             </div>
-        </div>
+        </article>
     </div>
-</div>
 
-<p class="text-muted" th:if="${albums.size() == 0}">
-    Album not found.
-</p>
-
+    <p class="text-muted" th:if="${albums.size() == 0}">
+        Album not found.
+    </p>
+</main>
 </body>
 </html>

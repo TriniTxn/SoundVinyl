@@ -1,9 +1,62 @@
-/* Album cover emphasis */
-.album-cover {
-    box-shadow: var(--shadow-md);
+/* 1) General layout */
+.album-hero {
+    display: grid;
+    gap: var(--space-5);
 }
 
-/* Review header spacing */
+/* On desktop: cover on the left side, content on the right side */
+@media (min-width: 768px) {
+    .album-hero {
+        grid-template-columns: minmax(240px, 360px) 1fr;
+        align-items: start;
+    }
+}
+
+/* 2) Album cover */
+.cover-wrapper {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    max-width: 360px;
+    margin-inline: auto;
+}
+@media (min-width: 768px) {
+    .cover-wrapper {
+        position: sticky;
+        top: 20px;
+        z-index: var(--z-1);
+    }
+}
+
+/* 3) Header */
+.album-header { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
+.album-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 14px;
+    color: var(--muted); font-size: .95rem;
+}
+.album-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* 4) Reviews */
+.review-list,
+#reviews.list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .review-header {
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
 }
+
+.review-content { line-height: 1.55; }
+.review-content.clamp-6 {
+    display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* 6) Bigger stars (not too much) */
+#stars .star { font-size: 2rem; }
+#stars .star:focus-visible { text-shadow: 0 0 10px rgba(245,197,24,.4); }

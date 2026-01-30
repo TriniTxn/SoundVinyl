@@ -11,20 +11,12 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUserIdAndAlbumId(Long userId, Long albumId);
 
-    @Query("SELECT r FROM Review r JOIN FETCH r.user WHERE r.album.id = :albumId ORDER BY r.createdAt DESC")
-    List<Review> findByAlbumIdOrderByCreatedAtDesc(@Param("albumId") Long albumId);
+    @Query("SELECT r FROM Review r JOIN FETCH r.user WHERE r.album.id = :albumId ORDER BY r.updatedAt DESC")
+    List<Review> findByAlbumIdOrderByUpdatedAtDesc(@Param("albumId") Long albumId);
 
-    @Query("""
-    SELECT AVG(r.rating)
-    FROM Review r
-    WHERE r.album.id = :albumId
-    """)
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.album.id = :albumId ")
     Double findAverageRatingByAlbumId(Long albumId);
 
-    @Query("""
-    SELECT COUNT(r)
-    FROM Review r
-    WHERE r.album.id = :albumId
-    """)
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.album.id = :albumId ")
     Long countByAlbumId(Long albumId);
 }

@@ -1,6 +1,7 @@
 package com.example.SoundVinyl.web.controller;
 
-import com.example.SoundVinyl.app.dto.ReviewRequest;
+import com.example.SoundVinyl.app.dto.ReviewRequestDTO;
+import com.example.SoundVinyl.app.dto.ReviewResponseDTO;
 import com.example.SoundVinyl.app.dto.ReviewViewDTO;
 import com.example.SoundVinyl.domain.model.Review;
 import com.example.SoundVinyl.domain.model.User;
@@ -23,7 +24,7 @@ public class ReviewController {
     private final ReviewRepository reviewRepository;
 
     @PostMapping
-    public Review upsert(@Valid @RequestBody ReviewRequest revRequest) {
+    public Review upsert(@Valid @RequestBody ReviewRequestDTO revRequest) {
         return reviewService.upsertReview(CURRENT_USER_ID,
                 revRequest.albumId(),
                 revRequest.rating(),
@@ -33,7 +34,7 @@ public class ReviewController {
 
     @GetMapping
     public List<ReviewViewDTO> byAlbum(@RequestParam Long albumId) {
-        return reviewRepository.findByAlbumIdOrderByCreatedAtDesc(albumId)
+        return reviewRepository.findByAlbumIdOrderByUpdatedAtDesc(albumId)
                 .stream()
                 .map(r -> new ReviewViewDTO(
                         r.getId(),
@@ -50,4 +51,6 @@ public class ReviewController {
     private String avatarOf(User user) {
         return "https://ui-avatars.com/api/?name=" + user.getUsername();
     }
+
+
 }

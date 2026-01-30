@@ -1,9 +1,60 @@
-/* Album grid cards */
-.card-title {
-    font-size: 1.05rem;
+/* 1) Grid variables */
+:root {
+    --home-grid-min: 190px; /* largura mínima do card */
+    --home-grid-gap: var(--space-4);
 }
 
+/* 2) Home sections */
+.home-section { margin-top: var(--space-7); }
+.home-section:first-child { margin-top: var(--space-6); }
+.home-section-title { margin: 0 0 var(--space-4); }
+
+/* 3) Albums grid */
+.album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--home-grid-min), 1fr));
+    gap: var(--home-grid-gap);
+    justify-items: center;
+}
+
+/* Cards inside grids */
+.album-grid .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 240px;
+    width: 100%;
+}
+.album-grid .cover-wrapper {
+    margin-bottom: var(--space-3);
+}
+.album-grid .card-body {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+/* 4) Cards typography (probably i will change that sometimes)  */
+.card-title {
+    font-size: clamp(1rem, 0.3vw + 0.95rem, 1.1rem);
+    line-height: 1.25;
+    margin: 0;
+}
+
+/* Cards descriptions */
 .card-text {
     color: var(--muted);
     font-size: .9rem;
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 2 lines limit */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
+
+/* 5) Responsivity */
+@media (min-width: 768px) { :root { --home-grid-min: 210px; } }
+@media (min-width: 1024px) { :root { --home-grid-min: 220px; } }
