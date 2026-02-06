@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+  <meta charset="UTF-8"/>
+  <title>SoundVinyl — Home</title>
+
+  <link th:href="@{/css/base.css}" rel="stylesheet"/>
+  <link th:href="@{/css/components.css}" rel="stylesheet"/>
+  <link th:href="@{/css/pages/home.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<div th:replace="~{header.html :: header}"></div>
+
+<main class="container page stack-lg">
+  <form method="get" th:action="@{/}">
+    <input
+            class="form-control"
+            name="q"
+            th:value="${q}"
+            placeholder="Buscar por álbum ou artista"
+    />
+  </form>
+
+  <div th:if="${albums.size() > 0}" class="album-grid">
+    <article class="card" th:each="a : ${albums}">
+      <a th:href="@{|/album/${a.id}|}">
+        <div class="cover-wrapper">
+          <img th:src="${a.coverUrl}" alt="Capa do álbum"/>
+        </div>
+      </a>
+
+      <div class="card-body">
+        <h6 class="card-title" th:text="${a.title}">Álbum</h6>
+
+        <div class="text-muted">
+          <span th:text="${a.artist.name}">Artista</span>
+          • <span th:text="${a.releaseYear}">Ano</span>
+        </div>
+
+        <div>
+          ★ <strong th:text="${a.ratingAvg}">0.0</strong>
+          <span class="text-muted">
+                        (<span th:text="${a.ratingCount}">0</span>)
+                    </span>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <p class="text-muted" th:if="${albums.size() == 0}">
+    Album not found.
+  </p>
+</main>
+
+<div th:replace="~{footer.html :: footer}"></div>
+
+</body>
+</html>

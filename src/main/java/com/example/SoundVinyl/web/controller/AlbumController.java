@@ -1,5 +1,6 @@
 package com.example.SoundVinyl.web.controller;
 
+import com.example.SoundVinyl.app.dto.AlbumStatsDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.model.Review;
 import com.example.SoundVinyl.domain.service.AlbumService;
@@ -19,22 +20,18 @@ import java.util.Optional;
 @RequestMapping("/album")
 public class AlbumController {
 
-    @Autowired
-    private AlbumService albumService;
+    private final AlbumService albumService;
 
-    @Autowired
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
 
     @GetMapping("/{id}")
     public String albumDetail(@PathVariable Long id, Model model) {
         Album album = albumService.getOrThrow(id);
-        /* var stats = albumService.getAlbumStats(id); */
-        Optional<Review> myReview = Optional.empty();
+        AlbumStatsDTO stats = reviewService.getAlbumStats(id);
 
-        /* Later on will be loaded by logged user */
-        model.addAttribute("myReview", myReview.orElse(null));
+        model.addAttribute("stats", stats);
+        model.addAttribute("myReview", null);
         model.addAttribute("album", album);
-        /* model.addAttribute("stats", stats); */
 
         return "album";
     }

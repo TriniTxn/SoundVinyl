@@ -33,6 +33,8 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    private String AvatarUrl;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = Instant.now();

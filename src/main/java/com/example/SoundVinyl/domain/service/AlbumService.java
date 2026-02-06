@@ -1,6 +1,7 @@
 package com.example.SoundVinyl.domain.service;
 
-import com.example.SoundVinyl.app.dto.AlbumStats;
+import com.example.SoundVinyl.app.dto.AlbumCardDTO;
+import com.example.SoundVinyl.app.dto.AlbumStatsDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.repository.AlbumRepository;
 import com.example.SoundVinyl.domain.repository.ReviewRepository;
@@ -27,13 +28,17 @@ public class AlbumService {
         return albumRepo.findByIdWithArtist(id).orElseThrow(() -> new EntityNotFoundException("Album not found"));
     }
 
-    public AlbumStats getAlbumStats(Long albumId) {
+    public AlbumStatsDTO getAlbumStats(Long albumId) {
         Double avg = reviewRepository.findAverageRatingByAlbumId(albumId);
         Long count = reviewRepository.countByAlbumId(albumId);
                 
-        return new AlbumStats(
-                avg != null ? avg : 0.0,
-                count != null ? count : 0L
+        return new AlbumStatsDTO(
+                avg != null ? Math.round(avg * 10.0) / 10.0 : 0.0,
+                count
         );
+    }
+
+    public List<AlbumCardDTO> getAlbumCatalog() {
+        return albumRepo.findAllForCatalog();
     }
 }

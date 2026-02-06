@@ -1,5 +1,6 @@
 package com.example.SoundVinyl.domain.repository;
 
+import com.example.SoundVinyl.app.dto.AlbumStatsDTO;
 import com.example.SoundVinyl.domain.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT COUNT(r) FROM Review r WHERE r.album.id = :albumId ")
     Long countByAlbumId(Long albumId);
+
+    @Query("SELECT r FROM Review r JOIN FETCH r.user JOIN FETCH r.album ORDER BY r.updatedAt DESC")
+    List<Review> findRecentReviews();
+
+    @Query("SELECT new com.example.SoundVinyl.app.dto.AlbumStatsDTO(COALESCE(AVG(r.rating), 0.0), COUNT(r)) FROM Review r WHERE r.album.id = :albumId")
+    AlbumStatsDTO getAlbumStats(@Param("albumId") Long albumId);
 }

@@ -1,5 +1,6 @@
 package com.example.SoundVinyl.domain.repository;
 
+import com.example.SoundVinyl.app.dto.AlbumCardDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,6 +32,14 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
 
     @Query("SELECT r FROM Review r JOIN FETCH r.user WHERE r.album.id = :albumId ORDER BY r.createdAt DESC")
     List<Review> findByAlbumIdOrderByCreatedAtDesc(@Param("albumId") Long albumId);
+
+    @Query("SELECT new com.example.SoundVinyl.app.dto." +
+            "AlbumCardDTO(a.id, a.title, a.artist.name, a.releaseYear, a.coverUrl, " +
+            "COALESCE(AVG(r.rating), 0), COUNT(r.id)) " +
+            "FROM Album a LEFT JOIN Review r ON r.album.id = a.id " +
+            "GROUP BY a.id, a.title, a.artist.name, a.releaseYear, a.coverUrl " +
+            "ORDER BY a.title")
+    List<AlbumCardDTO> findAllForCatalog();
 
 
     /* Stats (future)

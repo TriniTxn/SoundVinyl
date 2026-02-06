@@ -1,5 +1,6 @@
 package com.example.SoundVinyl.domain.service;
 
+import com.example.SoundVinyl.app.dto.AlbumStatsDTO;
 import com.example.SoundVinyl.app.dto.ReviewResponseDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.model.Review;
@@ -56,6 +57,10 @@ public class ReviewService {
         album.setRatingCount((int) count);
 
         albumRepo.save(album);
+    }
+
+    public AlbumStatsDTO getAlbumStats(Long albumId) {
+        return reviewRepo.getAlbumStats(albumId);
     }
 
     /* public List<ReviewResponseDTO> listByAlbum(Long albumId, Long currentUserId) {
