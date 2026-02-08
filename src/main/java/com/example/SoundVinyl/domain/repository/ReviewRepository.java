@@ -25,8 +25,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r JOIN FETCH r.user JOIN FETCH r.album ORDER BY r.updatedAt DESC")
     List<Review> findRecentReviews();
 
-    @Query("SELECT new com.example.SoundVinyl.app.dto.AlbumStatsDTO(AVG(r.rating), COUNT(r)) FROM Review r WHERE r.album.id = :albumId")
-    AlbumStatsDTO getAlbumStats(@Param("albumId") Long albumId);
-
-    Long album(Album album);
+    @Query("SELECT COALESCE(AVG(r.rating), 0), COUNT(r) FROM Review r WHERE r.album.id = :albumId")
+    Object[] getAlbumStatsRaw(@Param("albumId") Long albumId);
 }

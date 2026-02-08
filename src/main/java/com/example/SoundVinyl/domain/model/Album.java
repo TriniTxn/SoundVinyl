@@ -33,7 +33,7 @@ public class Album {
     private Double ratingAvg;
 
     @Column(name = "rating_count")
-    private Integer ratingCount;
+    private Long ratingCount;
 
 
     @Column(unique=true)

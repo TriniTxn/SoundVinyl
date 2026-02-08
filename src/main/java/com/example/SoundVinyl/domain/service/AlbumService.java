@@ -6,6 +6,8 @@ import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.repository.AlbumRepository;
 import com.example.SoundVinyl.domain.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Transient;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,13 +44,20 @@ public class AlbumService {
         return albumRepo.findAllForCatalog();
     }
 
-    public AlbumStatsDTO getStats(Long albumId) {
-        AlbumStatsDTO stats = reviewRepository.getAlbumStats(albumId);
+    @Transactional
+    public void updateAlbumStats(Long albumId) {
+        Object[] result = reviewRepository.getAlbumStatsRaw(albumId);
 
-        if (stats.averageRating() == null) {
-            return new AlbumStatsDTO(0.0, 0L);
-        }
+        Double avg = (Double) result[0];
+        Long count = (Long) result[1];
 
-        return stats;
+        Album album = albumRepo.findById(albumId).orElseThrow(() -> new RuntimeException("Album not found"));
+
+        album.setRatingAvg(avg);
+        album.setRatingCount(count);
+
+        albumRepo.save(album);
     }
+
+
 }

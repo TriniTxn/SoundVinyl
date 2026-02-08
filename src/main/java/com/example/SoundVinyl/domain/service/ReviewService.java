@@ -1,6 +1,7 @@
 package com.example.SoundVinyl.domain.service;
 
 import com.example.SoundVinyl.app.dto.AlbumStatsDTO;
+import com.example.SoundVinyl.app.dto.ReviewRequestDTO;
 import com.example.SoundVinyl.app.dto.ReviewResponseDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.model.Review;
@@ -28,6 +29,8 @@ public class ReviewService {
 
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private AlbumService albumService;
 
     public Review upsertReview(Long userId, Long albumId, Double rating, String text) {
 
@@ -54,26 +57,61 @@ public class ReviewService {
         long count = reviewRepo.countByAlbumId(album.getId());
 
         album.setRatingAvg(avg == null ? 0.0 : Math.round(avg * 10.0) / 10.0);
-        album.setRatingCount((int) count);
+        album.setRatingCount((long) (int) count);
 
         albumRepo.save(album);
     }
 
-    public AlbumStatsDTO getAlbumStats(Long albumId) {
-        return reviewRepo.getAlbumStats(albumId);
+    @Transactional
+    public Review createReview(ReviewRequestDTO reviewRequestDTO) {
+
+        Album album = albumRepo.findById(reviewRequestDTO.albumId()).orElseThrow(() -> new RuntimeException("Album not found"));
+
+        User user = userRepo.findById(reviewRequestDTO.userId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Review review = Review.builder()
+                .album(album)
+                .user(user)
+                .rating(reviewRequestDTO.rating())
+                .text(reviewRequestDTO.text())
+                .build();
+
+        Review savedReview = reviewRepo.save(review);
+
+        albumService.updateAlbumStats(album.getId());
+
+        return savedReview;
     }
 
-    /* public List<ReviewResponseDTO> listByAlbum(Long albumId, Long currentUserId) {
-        return reviewRepo.findByAlbumIdOrderByUpdatedAtDesc(albumId)
-                .stream()
-                .map(r -> ReviewResponseDTO
-                        .id(r.getId())
-                        .username(r.getUser().getUsername())
-                        .avatarUrl("/img/avatar-default.png")
-                        .rating(r.getRating())
-                        .text(r.getText())
-                        .mine(r.getUser().getId().equals(currentUserId))
-                        .build())
-                .toList();
-    } */
+    @Transactional
+    public Review updateReview(Long reviewId, ReviewRequestDTO dto) {
+
+        Review review = reviewRepo.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        review.setRating(dto.rating());
+        review.setText(dto.text());
+
+        Review updated = reviewRepo.save(review);
+
+        albumService.updateAlbumStats(review.getAlbum().getId());
+
+        return updated;
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId) {
+
+        Review review = reviewRepo.findById(reviewId).orElseThrow(() -> new RuntimeException("Review not found"));
+
+        Long albumId = review.getAlbum().getId();
+
+        reviewRepo.delete(review);
+
+        albumService.updateAlbumStats(albumId);
+    }
+
+    public Review getReviewById(Long id) {
+        return reviewRepo.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+    }
 }

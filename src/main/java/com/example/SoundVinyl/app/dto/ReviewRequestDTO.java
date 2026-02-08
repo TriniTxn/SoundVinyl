@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record ReviewRequestDTO(
         @NotNull Long albumId,
+        @NotNull Long userId,
         @DecimalMin("0.0") @DecimalMax("5.0") Double rating,
         @Size(max=5000) String text
 ) {}

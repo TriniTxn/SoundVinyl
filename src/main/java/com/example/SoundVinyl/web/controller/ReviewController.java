@@ -29,6 +29,29 @@ public class ReviewController {
     private final AlbumRepository albumRepository;
 
     @PostMapping
+    public String create(@RequestBody ReviewRequestDTO requestDto) {
+        reviewService.createReview(requestDto);
+        return "Review created successfully";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, @RequestBody ReviewRequestDTO requestDTO) {
+        reviewService.updateReview(id, requestDTO);
+        return "Review update successfully";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id) {
+        reviewService.deleteReview(id);
+        return "Review deleted successfully";
+    }
+
+    @GetMapping("/{id}")
+    public Object getReviewById(@PathVariable Long id) {
+        return reviewService.getReviewById(id);
+    }
+
+    @PostMapping
     public Review upsert(@Valid @RequestBody ReviewRequestDTO revRequest) {
         return reviewService.upsertReview(CURRENT_USER_ID,
                 revRequest.albumId(),
