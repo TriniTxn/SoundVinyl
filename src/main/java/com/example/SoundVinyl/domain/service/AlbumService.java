@@ -41,4 +41,14 @@ public class AlbumService {
     public List<AlbumCardDTO> getAlbumCatalog() {
         return albumRepo.findAllForCatalog();
     }
+
+    public AlbumStatsDTO getStats(Long albumId) {
+        AlbumStatsDTO stats = reviewRepository.getAlbumStats(albumId);
+
+        if (stats.averageRating() == null) {
+            return new AlbumStatsDTO(0.0, 0L);
+        }
+
+        return stats;
+    }
 }
