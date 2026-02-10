@@ -27,7 +27,7 @@ public class AlbumController {
     @GetMapping("/{id}")
     public String albumDetail(@PathVariable Long id, Model model) {
         Album album = albumService.getOrThrow(id);
-        AlbumStatsDTO stats = reviewService.getAlbumStats(id);
+        AlbumStatsDTO stats = albumService.getAlbumStats(id);
 
         model.addAttribute("stats", stats);
         model.addAttribute("myReview", null);

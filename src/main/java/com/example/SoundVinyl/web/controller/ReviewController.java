@@ -51,25 +51,10 @@ public class ReviewController {
         return reviewService.getReviewById(id);
     }
 
-    @PostMapping
-    public Review upsert(@Valid @RequestBody ReviewRequestDTO revRequest) {
-        return reviewService.upsertReview(CURRENT_USER_ID,
-                revRequest.albumId(),
-                revRequest.rating(),
-                revRequest.text()
-        );
-    }
 
     @GetMapping
     public List<ReviewViewDTO> listByAlbum(@RequestParam Long albumId) {
-        Album album = albumRepository.findById(albumId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        User currentUser = null;
-
-        return reviewRepository.findByAlbumIdOrderByUpdatedAtDesc(albumId)
-                .stream()
-                .map(r -> ReviewMapper.toView(r, currentUser))
-                .toList();
+        return reviewService.listByAlbum(albumId);
     }
 
     private String avatarOf(User user) {

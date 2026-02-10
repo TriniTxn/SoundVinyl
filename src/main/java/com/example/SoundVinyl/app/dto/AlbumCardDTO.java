@@ -6,7 +6,7 @@ public record AlbumCardDTO(
         String artistName,
         Integer releaseYear,
         String coverUrl,
-        double avgRating,
+        double ratingAvg,
         long ratingCount
 ) {
 }

@@ -3,16 +3,20 @@ package com.example.SoundVinyl.domain.service;
 import com.example.SoundVinyl.app.dto.AlbumStatsDTO;
 import com.example.SoundVinyl.app.dto.ReviewRequestDTO;
 import com.example.SoundVinyl.app.dto.ReviewResponseDTO;
+import com.example.SoundVinyl.app.dto.ReviewViewDTO;
 import com.example.SoundVinyl.domain.model.Album;
 import com.example.SoundVinyl.domain.model.Review;
 import com.example.SoundVinyl.domain.model.User;
 import com.example.SoundVinyl.domain.repository.AlbumRepository;
 import com.example.SoundVinyl.domain.repository.ReviewRepository;
 import com.example.SoundVinyl.domain.repository.UserRepository;
+import com.example.SoundVinyl.mapper.ReviewMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.List;
@@ -113,5 +117,16 @@ public class ReviewService {
 
     public Review getReviewById(Long id) {
         return reviewRepo.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+    }
+
+    public List<ReviewViewDTO> listByAlbum(Long albumId) {
+        Album album = albumRepo.findById(albumId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        User currentUser = null;
+
+        return reviewRepo.findByAlbumIdOrderByUpdatedAtDesc(albumId)
+                .stream()
+                .map(r -> ReviewMapper.toView(r, currentUser))
+                .toList();
     }
 }

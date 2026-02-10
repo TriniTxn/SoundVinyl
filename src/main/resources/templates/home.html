@@ -25,11 +25,32 @@
 
     <div th:if="${albums.size() > 0}" class="album-grid">
         <article class="card" th:each="a : ${albums}">
-            <a th:href="@{|/album/${a.id}|}">
-                <div class="cover-wrapper">
-                    <img th:src="${a.coverUrl}" alt="Capa do álbum"/>
-                </div>
-            </a>
+            <div class="card-actions mt-2 cluster">
+                <a class="btn btn-primary btn-sm" href="#" th:onclick="'document.getElementById(\'rv-create-' + ${a.id} + '\').open = true; return false;'">
+                    Avaliar
+                </a>
+
+                <a class="btn btn-outline btn-sm" th:href="@{/reviews(albumId=${a.id})}">
+                    Ver reviews
+                </a>
+            </div>
+
+            <details class="mt-2" th:id="'rv-create-' + ${a.id}">
+                <summary>Novo review para <span th:text="${a.title}">Álbum</span></summary>
+
+                <form class="review-create-form" onsubmit="return false;" th:attr="data-albumid=${a.id}">
+                    <div class="cluster">
+                        <label class="form-label">Nota</label>
+                        <input type="number" name="rating" class="form-control" min="0" max="5" step="0.5" required />
+                    </div>
+                    <div class="stack mt-1">
+                        <label class="form-label">Texto</label>
+                        <textarea name="text" class="form-control" rows="3" placeholder="O que achou?"></textarea>
+                    </div>
+                    <button class="btn btn-success btn-sm mt-1">Salvar review</button>
+                    <span class="text-muted small ms-2 status"></span>
+                </form>
+            </details>
 
             <div class="card-body">
                 <h6 class="card-title" th:text="${a.title}">Álbum</h6>
@@ -56,5 +77,40 @@
 
 <div th:replace="~{footer.html :: footer}"></div>
 
+<script>
+    async function postJson(url, body) {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+        return res;
+    }
+
+    document.querySelectorAll('.review-create-form').forEach(form => {
+        form.addEventListener('submit', async () => {
+            const albumId = Number(form.dataset.albumid);
+            const rating = Number(form.querySelector('[name=rating]').value);
+            const text = form.querySelector('[name=text]').value;
+
+            const status = form.querySelector('.status');
+            status.textContent = 'Enviando...'
+
+            try{
+                const res = await postJson('/api/reviews', {albumId, rating, text});
+
+                status.textContent = res.ok ? 'Review salva!' : 'Erro ao salvar';
+
+                if (res.ok) {
+                    const details = form.closest('details');
+                    if (details) details.open = false;
+                    form.reset();
+                }
+            } catch (e) {
+                status.textContent = 'Erro de rede';
+            }
+        });
+    });
+</script>
 </body>
 </html>
